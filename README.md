@@ -82,9 +82,12 @@ A comprehensive **multi-layer data quality validation system** that runs at each
 
 ### 🔁 Job Orchestration
 - **Databricks Workflows**: End-to-end pipeline orchestration using Databricks Jobs
+- **Layer Orchestration**: Silver and Gold layers use orchestration notebooks that programmatically call individual transformation notebooks via `dbutils.notebook.run()`
+- **Single Entry Points**: `silver_orchestration.ipynb` and `gold_orchestration.ipynb` serve as single task entry points, simplifying job configuration
 - **Task Dependencies**: Bronze → Silver → Gold with proper dependency management
 - **Quality Gates**: Each layer includes quality validation tasks before proceeding
 - **Error Handling**: Failed quality checks logged but don't block downstream (configurable)
+- **Infrastructure Setup**: `init_lakehouse.ipynb` initializes Unity Catalog schemas and volumes before first run
 
 ### 📊 Analytics & BI
 - **Gold Layer Star Schema**: Fact tables (orders) + Dimension tables (customers, products, regions)
@@ -107,6 +110,7 @@ A comprehensive **multi-layer data quality validation system** that runs at each
 
 ```
 Bike_Lakehouse/
+├── init_lakehouse.ipynb        # 🏛️ Setup: Creates schemas, volumes, catalog
 ├── Bronze/                     # Raw data ingestion notebooks
 │   ├── ingest_erp_data
 │   └── ingest_crm_data
@@ -114,19 +118,24 @@ Bike_Lakehouse/
 │   ├── quality_bronze_erp
 │   └── quality_bronze_crm
 ├── Silver/                     # Data cleaning & transformation
-│   ├── transform_customers
-│   ├── transform_locations
-│   ├── transform_products
-│   └── transform_orders
+│   ├── Silver_crm_customers_info
+│   ├── Silver_crm_products_info
+│   ├── Silver_crm_sales_details
+│   ├── silver_erp_cust_az12
+│   ├── silver_erp_loc_a101
+│   └── silver_erp_px_cat_g1v2
+├── silver_orchestration.ipynb  # 🔁 Runs all Silver notebooks in sequence
 ├── Silver-QualityCheck/        # Silver validation notebooks
 │   ├── quality_silver_erp_customers
 │   ├── quality_silver_erp_location
 │   ├── quality_silver_erp_products
-│   └── quality_silver_crm_orders
+│   ├── quality_silver_crm_products
+│   └── quality_silver_crm_sales
 ├── Gold/                       # Analytics-ready data models
-│   ├── gold_customer_ltv
-│   ├── gold_revenue_analysis
-│   └── gold_product_performance
+│   ├── Gold_Dim_Customers
+│   ├── Gold_dim_products
+│   └── Gold_fact_sales
+├── gold_orchestration.ipynb    # 🔁 Runs all Gold notebooks in sequence
 └── Gold-QualityCheck/          # Gold validation notebooks
     └── quality_gold_analytics
 ```
@@ -138,9 +147,11 @@ Bike_Lakehouse/
 ### For Data Engineering Roles:
 ✅ **Medallion Architecture Implementation** - Industry-standard Bronze/Silver/Gold pattern  
 ✅ **Data Quality Engineering** - Multi-layer validation framework with scoring and alerting  
-✅ **Pipeline Orchestration** - Dependency management, error handling, job scheduling  
+✅ **Pipeline Orchestration** - Orchestration notebooks with `dbutils.notebook.run()` for maintainable workflows  
+✅ **Job Design** - Single entry points per layer, proper task dependencies, quality gates  
 ✅ **Delta Lake Expertise** - ACID transactions, schema evolution, time travel  
 ✅ **Unity Catalog** - Table management, governance, and lineage  
+✅ **Infrastructure as Code** - Setup notebook for repeatable environment initialization  
 ✅ **Performance Optimization** - Metric views for dashboard performance  
 
 ### For Analytics Engineering Roles:
@@ -163,9 +174,50 @@ When discussing this project in interviews:
 
 1. **Start with the business context** - "I built a lakehouse demonstration using TPC-H benchmark data..."
 2. **Highlight the data quality framework** - "I implemented comprehensive validation at each layer with automated scoring..."
-3. **Emphasize end-to-end ownership** - "I designed the architecture, built the pipelines, implemented quality checks, orchestrated the jobs, AND delivered the analytics dashboard"
-4. **Connect to your SAP background** - "This mirrors real-world ERP integration patterns I've seen in SAP environments..."
-5. **Show technical depth** - "I used Delta Lake for ACID transactions, Unity Catalog for governance, metric views for performance..."
+3. **Mention the orchestration pattern** - "I used orchestration notebooks to coordinate transformations - each layer has a single entry point that programmatically runs all transformation notebooks in sequence..."
+4. **Emphasize end-to-end ownership** - "I designed the architecture, built the pipelines, implemented quality checks, orchestrated the jobs, AND delivered the analytics dashboard"
+5. **Connect to your SAP background** - "This mirrors real-world ERP integration patterns I've seen in SAP environments..."
+6. **Show technical depth** - "I used Delta Lake for ACID transactions, Unity Catalog for governance, metric views for performance..."
+
+---
+
+## Orchestration Pattern
+
+The project uses **layer orchestration notebooks** for Silver and Gold transformations:
+
+**Why Orchestration Notebooks?**
+- **Simplified Job Configuration**: Instead of creating 6+ separate tasks for Silver transformations, you have one `silver_orchestration` task that calls all transformation notebooks programmatically
+- **Single Entry Point**: Each layer has one entry point, making the data pipeline easier to understand and maintain
+- **Consistent Execution**: All transformations in a layer run in a defined sequence with centralized error handling
+- **Easier Testing**: Run the entire layer with one notebook instead of manually triggering multiple tasks
+
+**Implementation:**
+```python
+# silver_orchestration.ipynb
+notebooks = [
+    "./Silver/Silver_crm_customers_info",
+    "./Silver/Silver_crm_products_info",
+    # ... all Silver notebooks
+]
+
+for nb in notebooks:
+    dbutils.notebook.run(nb, timeout_seconds=0)
+```
+
+**Job Structure:**
+```
+Bike_Lakehouse_Pipeline:
+  │
+  ├── Task 1: init_lakehouse (one-time setup)
+  ├── Task 2: Bronze Ingestion
+  ├── Task 3: Bronze Quality Checks
+  ├── Task 4: silver_orchestration ← Runs 6 notebooks
+  ├── Task 5: Silver Quality Checks
+  ├── Task 6: gold_orchestration ← Runs 3 notebooks
+  └── Task 7: Gold Quality Checks
+```
+
+This pattern is commonly used in production data engineering workflows and demonstrates understanding of **maintainable pipeline design**.
 
 ---
 
