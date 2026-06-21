@@ -155,3 +155,4 @@ if QUALITY_CONFIG.get("fail_on_critical") and quality_score < 70:
 # COMMAND ----------
 
 
+
