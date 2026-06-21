@@ -1,0 +1,637 @@
+{
+  "datasets": [
+    {
+      "name": "customer_value",
+      "displayName": "Customer Lifetime Value",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.gold.gold_customer_lifetime_value",
+        "dimensions": [
+          {
+            "name": "c_custkey",
+            "expr": "c_custkey"
+          },
+          {
+            "name": "c_name",
+            "expr": "c_name",
+            "displayName": "Customer Name"
+          },
+          {
+            "name": "first_order_date",
+            "expr": "first_order_date",
+            "displayName": "First Order Date"
+          },
+          {
+            "name": "last_order_date",
+            "expr": "last_order_date",
+            "displayName": "Last Order Date"
+          },
+          {
+            "name": "value_segment",
+            "expr": "value_segment",
+            "displayName": "Value Segment"
+          }
+        ],
+        "measures": [
+          {
+            "name": "total_orders",
+            "expr": "SUM(total_orders)",
+            "displayName": "Total Orders"
+          },
+          {
+            "name": "total_revenue",
+            "expr": "SUM(total_revenue)",
+            "displayName": "Total Revenue",
+            "format": {
+              "type": "currency",
+              "currencyCode": "USD",
+              "decimalPlaces": {
+                "type": "exact",
+                "places": 0.0
+              },
+              "abbreviation": "compact"
+            }
+          },
+          {
+            "name": "average_order_value",
+            "expr": "SUM(total_revenue) / SUM(total_orders)",
+            "displayName": "Average Order Value",
+            "format": {
+              "type": "currency",
+              "currencyCode": "USD",
+              "decimalPlaces": {
+                "type": "exact",
+                "places": 2.0
+              }
+            }
+          },
+          {
+            "name": "customer_count",
+            "expr": "COUNT(DISTINCT c_custkey)",
+            "displayName": "Total Customers"
+          }
+        ]
+      }
+    },
+    {
+      "name": "regional_revenue",
+      "displayName": "Regional Revenue by Month",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.gold.gold_monthly_revenue_by_region",
+        "dimensions": [
+          {
+            "name": "region_name",
+            "expr": "region_name",
+            "displayName": "Region"
+          },
+          {
+            "name": "order_year",
+            "expr": "order_year",
+            "displayName": "Year"
+          },
+          {
+            "name": "order_month",
+            "expr": "order_month",
+            "displayName": "Month"
+          },
+          {
+            "name": "year_month",
+            "expr": "CONCAT(CAST(order_year AS STRING), '-', LPAD(CAST(order_month AS STRING), 2, '0'))",
+            "displayName": "Year-Month"
+          }
+        ],
+        "measures": [
+          {
+            "name": "revenue",
+            "expr": "SUM(revenue)",
+            "displayName": "Revenue",
+            "format": {
+              "type": "currency",
+              "currencyCode": "USD",
+              "decimalPlaces": {
+                "type": "exact",
+                "places": 0.0
+              },
+              "abbreviation": "compact"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "top_products",
+      "displayName": "Top Products by Revenue",
+      "config": {
+        "source": "workspace.gold.gold_top_products",
+        "measures": [
+          {
+            "name": "total_revenue",
+            "expr": "SUM(total_revenue)",
+            "displayName": "Total Revenue",
+            "format": {
+              "type": "currency",
+              "currencyCode": "USD",
+              "decimalPlaces": {
+                "type": "exact",
+                "places": 0.0
+              }
+            }
+          },
+          {
+            "name": "total_quantity",
+            "expr": "SUM(total_quantity)",
+            "displayName": "Total Quantity"
+          },
+          {
+            "name": "order_count",
+            "expr": "SUM(order_count)",
+            "displayName": "Order Count"
+          }
+        ],
+        "filter": "revenue_rank <= 10",
+        "version": "1.1",
+        "dimensions": [
+          {
+            "name": "p_partkey",
+            "expr": "p_partkey"
+          },
+          {
+            "name": "p_name",
+            "expr": "p_name",
+            "displayName": "Product Name"
+          },
+          {
+            "name": "p_brand",
+            "expr": "p_brand",
+            "displayName": "Brand"
+          },
+          {
+            "name": "revenue_rank",
+            "expr": "revenue_rank",
+            "displayName": "Revenue Rank"
+          }
+        ]
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "75b85cdb",
+      "displayName": "Page 1",
+      "layout": [
+        {
+          "widget": {
+            "name": "total_revenue_counter",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "customer_value",
+                  "fields": [
+                    {
+                      "name": "measure(total_revenue)",
+                      "expression": "MEASURE(`total_revenue`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Total Revenue",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(total_revenue)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 4,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "total_customers_counter",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "customer_value",
+                  "fields": [
+                    {
+                      "name": "measure(customer_count)",
+                      "expression": "MEASURE(`customer_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Total Customers",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(customer_count)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 0,
+            "width": 4,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "total_orders_counter",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "customer_value",
+                  "fields": [
+                    {
+                      "name": "measure(total_orders)",
+                      "expression": "MEASURE(`total_orders`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Total Orders",
+                "showTitle": true,
+                "showDescription": false
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(total_orders)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 0,
+            "width": 4,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "revenue_by_region",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "regional_revenue",
+                  "fields": [
+                    {
+                      "name": "region_name",
+                      "expression": "`region_name`"
+                    },
+                    {
+                      "name": "measure(revenue)",
+                      "expression": "MEASURE(`revenue`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Revenue by Region",
+                "showTitle": true,
+                "showDescription": false
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "region_name",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(revenue)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 12,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "monthly_revenue_trend",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "regional_revenue",
+                  "fields": [
+                    {
+                      "name": "region_name",
+                      "expression": "`region_name`"
+                    },
+                    {
+                      "name": "year_month",
+                      "expression": "`year_month`"
+                    },
+                    {
+                      "name": "measure(revenue)",
+                      "expression": "MEASURE(`revenue`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Monthly Revenue Trend",
+                "showTitle": true
+              },
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "year_month",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(revenue)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "region_name",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 12,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "top_products_table",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "top_products",
+                  "fields": [
+                    {
+                      "name": "revenue_rank",
+                      "expression": "`revenue_rank`"
+                    },
+                    {
+                      "name": "p_name",
+                      "expression": "`p_name`"
+                    },
+                    {
+                      "name": "p_brand",
+                      "expression": "`p_brand`"
+                    },
+                    {
+                      "name": "measure(total_revenue)",
+                      "expression": "MEASURE(`total_revenue`)"
+                    },
+                    {
+                      "name": "measure(total_quantity)",
+                      "expression": "MEASURE(`total_quantity`)"
+                    },
+                    {
+                      "name": "measure(order_count)",
+                      "expression": "MEASURE(`order_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Top 10 Products by Revenue",
+                "showTitle": true
+              },
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "revenue_rank",
+                    "useForSearch": false
+                  },
+                  {
+                    "fieldName": "p_name",
+                    "useForSearch": true
+                  },
+                  {
+                    "fieldName": "p_brand",
+                    "useForSearch": true
+                  },
+                  {
+                    "fieldName": "measure(total_revenue)",
+                    "useForSearch": false
+                  },
+                  {
+                    "fieldName": "measure(total_quantity)",
+                    "useForSearch": false
+                  },
+                  {
+                    "fieldName": "measure(order_count)",
+                    "useForSearch": false
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 12,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "customer_segments",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "customer_value",
+                  "fields": [
+                    {
+                      "name": "value_segment",
+                      "expression": "`value_segment`"
+                    },
+                    {
+                      "name": "measure(customer_count)",
+                      "expression": "MEASURE(`customer_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Customer Distribution by Value Segment",
+                "showTitle": true
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "value_segment",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(customer_count)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 14,
+            "width": 6,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "segment_revenue",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "customer_value",
+                  "fields": [
+                    {
+                      "name": "value_segment",
+                      "expression": "`value_segment`"
+                    },
+                    {
+                      "name": "measure(total_revenue)",
+                      "expression": "MEASURE(`total_revenue`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Revenue by Customer Segment",
+                "showTitle": true
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "value_segment",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(total_revenue)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 14,
+            "width": 6,
+            "height": 4
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
