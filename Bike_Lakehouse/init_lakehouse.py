@@ -17,8 +17,8 @@
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC -- Use workspace catalog
-# MAGIC USE CATALOG workspace;
+# MAGIC -- Use workspace_1 catalog
+# MAGIC USE CATALOG workspace_1;
 
 # COMMAND ----------
 
@@ -38,3 +38,33 @@
 # MAGIC -- Create Monitoring schema
 # MAGIC CREATE SCHEMA IF NOT EXISTS monitoring
 # MAGIC COMMENT 'Monitoring: data quality logs and metrics';
+
+# COMMAND ----------
+
+# DBTITLE 1,Create Volume
+# MAGIC %sql
+# MAGIC -- Create volume for raw source files (if using Volumes)
+# MAGIC CREATE VOLUME IF NOT EXISTS workspace_1.bronze.raw_sources
+# MAGIC COMMENT 'Volume for raw source files (CSV)';
+
+# COMMAND ----------
+
+# DBTITLE 1,Verify Setup
+# Verify schemas were created
+schemas = spark.sql("SHOW SCHEMAS IN workspace_1").collect()
+schema_names = [row.databaseName for row in schemas]
+
+print("✅ Lakehouse Infrastructure Setup Complete\n")
+print("Created Schemas:")
+for schema in ['bronze', 'silver', 'gold', 'monitoring']:
+    if schema in schema_names:
+        print(f"   ✓ workspace_1.{schema}")
+    else:
+        print(f"   ✗ workspace_1.{schema} - NOT FOUND")
+
+# Check if volume exists
+try:
+    volumes = spark.sql("SHOW VOLUMES IN workspace_1.bronze").collect()
+    print(f"\n✓ Volume: workspace_1.bronze.raw_sources")
+except:
+    print(f"\n✗ Volume creation may have failed - check permissions")

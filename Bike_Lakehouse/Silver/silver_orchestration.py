@@ -19,12 +19,12 @@
 
 # Silver transformation notebooks to run in sequence
 notebooks = [
-    "./Silver/Silver_crm_customers_info",
-    "./Silver/Silver_crm_products_info",
-    "./Silver/Silver_crm_sales_details",
-    "./Silver/silver_erp_cust_az12",
-    "./Silver/silver_erp_loc_a101",
-    "./Silver/silver_erp_px_cat_g1v2"
+    "./Silver_crm_customers_info",
+    "./Silver_crm_products_info",
+    "./Silver_crm_sales_details",
+    "./silver_erp_cust_az12",
+    "./silver_erp_loc_a101",
+    "./silver_erp_px_cat_g1v2"
 ]
 
 for nb in notebooks:

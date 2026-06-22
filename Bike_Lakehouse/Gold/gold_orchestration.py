@@ -19,9 +19,9 @@
 
 # Gold transformation notebooks to run in sequence
 notebooks = [
-    "./Gold/Gold_Dim_Customers",
-    "./Gold/Gold_dim_products",
-    "./Gold/Gold_fact_sales"
+    "./Gold_Dim_Customers",
+    "./Gold_dim_products",
+    "./Gold_fact_sales"
 ]
 
 for nb in notebooks:
