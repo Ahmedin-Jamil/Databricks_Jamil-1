@@ -1,7 +1,7 @@
 # Databricks notebook source
 # DBTITLE 1,Silver Quality Check - CRM Customers
 # MAGIC %md
-# MAGIC # 🛡️ Silver Layer Quality Check - CRM Customers
+# MAGIC # Silver Layer Quality Check - CRM Customers
 # MAGIC
 # MAGIC ## Purpose:
 # MAGIC Validate Silver layer transformation quality AFTER transformation
@@ -110,8 +110,3 @@ try:
     print(f"✅ Quality Score: {quality_score}/100 | Silver: {silver_count:,} | Bronze: {bronze_count:,}")
 except Exception as e:
     print(f"⚠️ Metrics not saved: {e}")
-
-# COMMAND ----------
-
-
-

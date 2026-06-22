@@ -1,7 +1,7 @@
 # Databricks notebook source
 # DBTITLE 1,Bronze Quality Check - ERP Data
 # MAGIC %md
-# MAGIC # 🛡️ Bronze Layer Quality Check - ERP Data
+# MAGIC # Bronze Layer Quality Check - ERP Data
 # MAGIC
 # MAGIC ## Purpose:
 # MAGIC Validate ERP source data quality AFTER ingestion, BEFORE downstream transformation
@@ -435,4 +435,3 @@ print("="*80)
 # Fail pipeline if configured and critical issues found
 if QUALITY_CONFIG.get("fail_on_critical") and quality_score < 70:
     raise Exception(f"Quality check failed with score {quality_score}/100. Critical issues: {critical_issues}")
-

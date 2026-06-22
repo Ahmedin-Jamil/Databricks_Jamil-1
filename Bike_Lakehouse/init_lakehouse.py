@@ -4,7 +4,7 @@
 # environment_version = "5"
 # ///
 # MAGIC %md
-# MAGIC # 🏗️ Initialize Lakehouse Infrastructure
+# MAGIC # Initialize Lakehouse Infrastructure
 # MAGIC
 # MAGIC ## Purpose
 # MAGIC Sets up the foundational infrastructure for the Bike Lakehouse project:

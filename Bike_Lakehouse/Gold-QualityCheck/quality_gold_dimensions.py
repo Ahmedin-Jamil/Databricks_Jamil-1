@@ -1,7 +1,7 @@
 # Databricks notebook source
 # DBTITLE 1,Gold Quality - Dimension Tables
 # MAGIC %md
-# MAGIC # 🛡️ Gold Layer Quality Check - Dimension Tables
+# MAGIC # Gold Layer Quality Check - Dimension Tables
 # MAGIC
 # MAGIC ## Purpose:
 # MAGIC Validate Gold dimension tables for completeness, uniqueness, and referential integrity
@@ -151,8 +151,3 @@ except Exception as e:
 # Fail if configured and critical
 if QUALITY_CONFIG.get("fail_on_critical") and quality_score < 70:
     raise Exception(f"CRITICAL: Gold dimension quality failed with score {quality_score}/100")
-
-# COMMAND ----------
-
-
-

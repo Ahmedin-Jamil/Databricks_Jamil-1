@@ -1,7 +1,7 @@
 # Databricks notebook source
 # DBTITLE 1,Gold Quality - Fact Sales
 # MAGIC %md
-# MAGIC # 🛡️ Gold Layer Quality Check - Fact Sales (CRITICAL)
+# MAGIC # Gold Layer Quality Check - Fact Sales (CRITICAL)
 # MAGIC
 # MAGIC ## Purpose:
 # MAGIC COMPREHENSIVE validation of fact_sales before production reporting
@@ -278,8 +278,3 @@ if warnings:
 # FAIL PIPELINE IF CRITICAL
 if QUALITY_CONFIG.get("fail_on_critical") and quality_score < 70:
     raise Exception(f"PIPELINE BLOCKED: Gold fact quality score {quality_score}/100. Critical issues: {critical_issues}")
-
-# COMMAND ----------
-
-
-

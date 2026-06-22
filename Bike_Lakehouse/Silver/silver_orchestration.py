@@ -4,7 +4,7 @@
 # environment_version = "5"
 # ///
 # MAGIC %md
-# MAGIC # 🔄 Silver Layer Orchestration
+# MAGIC # Silver Layer Orchestration
 # MAGIC
 # MAGIC ## Orchestration Logic
 # MAGIC

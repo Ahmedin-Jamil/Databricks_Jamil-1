@@ -1,7 +1,7 @@
 # Databricks notebook source
 # DBTITLE 1,Silver Quality Check - ERP Products
 # MAGIC %md
-# MAGIC # 🛡️ Silver Layer Quality Check - ERP Products
+# MAGIC # Silver Layer Quality Check - ERP Products
 # MAGIC
 # MAGIC ## Validates:
 # MAGIC * **Bronze:** `workspace_1.bronze.erp_px_cat_g1v2`
@@ -43,8 +43,3 @@ try:
     print(f"✅ {quality_score}/100 | Silver: {silver_count:,} | Bronze: {bronze_count:,}")
 except Exception as e:
     print(f"⚠️ {e}")
-
-# COMMAND ----------
-
-
-
