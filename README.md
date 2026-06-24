@@ -1,4 +1,4 @@
-# Bike Lakehouse - Databricks Data Engineering Project
+# Bike Lakehouse - Azure Databricks Project
 
 ## About This Project
 
