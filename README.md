@@ -1,5 +1,9 @@
 # Bike Lakehouse - Azure Databricks Project
 
+
+![Uploading image.png…]()
+
+
 ## About This Project
 
 This is a personal project I built to practice real-world pipeline development using Azure Databricks.
