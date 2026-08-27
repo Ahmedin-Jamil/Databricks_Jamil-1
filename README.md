@@ -1,7 +1,7 @@
 # Bike Lakehouse - Azure Databricks Project
 
 
-![Uploading image.png…]()
+<img width="1182" height="848" alt="project-databricks" src="https://github.com/user-attachments/assets/27177af0-0a8e-4827-9d45-2f95305f85c7" />
 
 
 ## About This Project
